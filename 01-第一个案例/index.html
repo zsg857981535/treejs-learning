@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>01</title>
+  <style>
+    body {
+      margin: 0;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%
+    }
+  </style>
+</head>
+
+<body>
+  <script src="./js/three.js"></script>
+
+  <script>
+    // 初始化场景
+    var scene = new THREE.Scene();
+    // 初始化相机，参数:(arg1: 视野角度（FOV), arg2: 长宽比（aspect ratio）, arg3:近截面（near）， arg4: 远截面（far）)
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    // 初始化渲染器
+    var renderer = new THREE.WebGLRenderer();
+    // 设置渲染器渲染尺寸
+    renderer.setSize(window.innerWidth, window.innerHeight);
+     // 挂载渲染器
+     document.body.appendChild(renderer.domElement);
+
+    // 创建立方体对象
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+    // 创建一个材质 
+    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    // 创建网格
+    var cube = new THREE.Mesh(geometry, material);
+    // 将网格添加到场景中，默认添加到(0,0,0)坐标
+    scene.add(cube);
+    // 移动相机的位置，避免立方体和相机在一起
+    camera.position.z = 5;
+   
+    // 动画循环
+    function animate() {
+      requestAnimationFrame(animate);
+      // 让网格动起来
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+  </script>
+
+</body>
+
+</html>

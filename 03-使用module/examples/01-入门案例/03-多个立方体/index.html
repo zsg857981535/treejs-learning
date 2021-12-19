@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>02-添加光源</title>
+</head>
+
+<body>
+
+  <canvas id="c"></canvas>
+
+  <script type="module">
+    import * as THREE from './build/three.module.js'
+
+    function main() {
+      // 1. 渲染器挂载到canvas上
+      const canvas = document.querySelector('#c')
+      const renderer = new THREE.WebGLRenderer({ canvas })
+
+      // 2. 初始化相机
+      const fov = 75 // field of view 视野范围
+      const aspect = 2 // 画布宽高比，相机默认值
+      const near = 0.1 // 近平面
+      const far = 5 // 远平面
+      // 透视摄像机
+      const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+      // 移动相机到z轴2正方向
+      camera.position.z = 2
+
+      // 3.创建一个场景
+      const scene = new THREE.Scene()
+
+      // 4.给定盒子信息创建立方体
+      const boxWidth = 1
+      const boxHeight = 1
+      const boxDepth = 1
+      const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth)
+
+      // 5. 创建一盏平行光光源
+      const color = 0xFFFFFF
+      const intensity = 1
+      const light = new THREE.DirectionalLight(color, intensity)
+      // 灯光的位置
+      light.position.set(-1, 2, 4)
+      // 场景添加光源
+      scene.add(light)
+
+      // 6. 受光源影响的材质
+      const material = new THREE.MeshPhongMaterial({ color: 0x44aa88 })
+
+      // 7. 创建多个网格
+      const cubes = [
+        makeInstance(geometry, 0x44aa88, 0),
+        makeInstance(geometry, 0x8844aa, -2),
+        makeInstance(geometry, 0xaa8844, 2),
+      ];
+
+      // 8. 创建动画
+      function render(time) {
+        time *= 0.001 // 将时间单位变成秒
+        // 设置多个立方体的旋转
+        cubes.forEach((cube, ndx) => {
+          const speed = 1 + ndx * .1;
+          const rot = time * speed;
+          cube.rotation.x = rot;
+          cube.rotation.y = rot;
+        });
+
+        renderer.render(scene, camera)
+        requestAnimationFrame(render)
+      }
+      // 主进程中开始整个渲染循环
+      requestAnimationFrame(render)
+
+      /* 创建网格函数 */
+      function makeInstance(geometry, color, x) {
+        const material = new THREE.MeshPhongMaterial({ color });
+
+        const cube = new THREE.Mesh(geometry, material);
+        scene.add(cube);
+
+        cube.position.x = x;
+
+        return cube;
+      }
+    }
+
+    main()
+  </script>
+</body>
+
+</html>
